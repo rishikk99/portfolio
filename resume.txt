@@ -1,0 +1,210 @@
+%-------------------------
+% Resume in Latex
+% Author : Adapted from Jake Gutierrez's template
+% Based on: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet} % Default bullet for itemize
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\setlength{\footskip}{4.1pt}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+%----------FONT OPTIONS----------
+% Optionally uncomment one of these packages for different font styles
+% \usepackage[sfdefault]{FiraSans}
+\usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+% PDF name?
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.40in}
+\addtolength{\evensidemargin}{-0.40in}
+\addtolength{\textwidth}{1.00in}
+\addtolength{\topmargin}{-.50in}
+\addtolength{\textheight}{1.00in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure generated pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small#2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      #1 & #2 \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+% Modified: Remove bullet points from the subheading lists by using an empty label.
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    {\Huge \scshape Rishik Kanchanapally}\\
+    \vspace{2pt}
+    \href{mailto:rishik.kanchanapally@gmail.com}{rishik.kanchanapally@gmail.com} \textbar{}\
+    \href{https://www.linkedin.com/in/rishikk}{linkedin.com/in/rishikk} \textbar{}\
+    US Citizen
+\end{center}
+
+%-----------EDUCATION-----------
+\section{EDUCATION}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Master of Science, Computer Science (Intelligent Systems Track)}{May 2026}
+      {The University of Texas at Dallas}{}
+    \resumeSubheading
+      {Bachelor of Science, Computer Science}{May 2025}
+      {The University of Texas at Dallas}{}
+  \resumeItemListStart
+    \resumeItem{National Merit Scholar and CS\textsuperscript{2} Honors}
+  \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------WORK EXPERIENCE-----------
+\section{WORK EXPERIENCE}
+  \resumeSubHeadingListStart
+    
+    \resumeSubheading
+      {Software Development Engineer \textbar{} C\#, Selenium, SQL, Docker}{May 2025 -- August 2025}
+      {Paycom}{}
+      \resumeItemListStart
+      \resumeItem{Developed Selenium-based regression tests in C\# for payroll workflows and containerized execution with Docker}
+      \resumeItem{Automated SQL queries to streamline database migration testing, identifying a schema mismatch before release}
+      \resumeItem{Partnered with developers and QA to write test plans, debug failures, and expand coverage for edge cases}
+      \resumeItemListEnd
+      \resumeSubheading
+      {Software Engineer \textbar{} Java, UiPath, Visual Basic .NET, REST APIs}{May 2024 -- December 2024}
+      {Arkansas Blue Cross and Blue Shield}{}
+    \resumeItemListStart
+      \resumeItem{Built and deployed a Java-based automation system for Medicare claims pricing by integrating internal web services with an external pricing tool, with projected savings of 10,000 manual entry hours per year}
+      \resumeItem{Trained a machine learning model using NLP and OCR techniques to extract and digitize handwritten fields from prior authorization request forms, significantly reducing manual entry and improving processing speed}
+      \resumeItem{Transformed JSON payloads between internal and external tools, aligning data formats for data integration}
+      \resumeItem{Set up automated CI/CD pipelines with UrbanCode Deploy and Jenkins to streamline deployments}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Full Stack Engineer \textbar{} Python, Flask, JavaScript, HTML/CSS}{May 2021 -- April 2022}
+      {Apothewell}{}
+    \resumeItemListStart
+      \resumeItem{Built and deployed a Flask web application on Linux with dynamic forms and email-based support workflows}
+      \resumeItem{Configured Nginx as a reverse proxy to serve the app, and used PuTTY for remote access and server management}
+      \resumeItem{Contributed to early product validation by testing the mobile app and prototyping hardware}
+    \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{PROJECTS}
+  \resumeSubHeadingListStart
+
+    \resumeProjectHeading
+      {\textbf{Event Market Trading Bot \textbar{} Python, Whisper, WebSockets, NLP}}{July 2025 -- Present}
+      \resumeItemListStart
+        \resumeItem{Built a real-time data pipeline to process live audio streams over WebSockets and transcribe speech with Whisper}
+       \resumeItem{Implemented transcript analysis using regex-based detection and speaker-aware NLP/LLM processing}
+       \resumeItem{Added latency tracking for detection and order execution to diagnose bottlenecks and monitor response time}
+       \resumeItem{Optimized pipeline to achieve $\sim$1.5s end-to-end latency from audio ingestion to keyword detection and execution}
+       \resumeItem{Built execution tooling to stage bulk orders beforehand and submit them with a single click}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {\textbf{Deepfake Detector \textbar{} PyTorch, Pillow, NumPy, Pandas, OpenCV}}{January 2024 -- May 2024}
+      \resumeItemListStart
+        \resumeItem{Built AI system requiring only one authentic photo to flag deepfake photos/videos in high-risk identity checks}
+        \resumeItem{Owned training and integration of two cutting-edge AI models for face recognition and deepfake classification}
+        \resumeItem{Delivered 84\% accuracy across 800+ image/video samples, supporting use in real-world content screening}
+        \resumeItem{Classified suspect content in under 3 seconds on average, enabling real-time deepfake detection at scale}
+      \resumeItemListEnd
+
+      \resumeProjectHeading
+  {\textbf{Social Media Data Analysis \textbar{} Python, Twitter API, TextBlob, Botometer, Tableau}}{Aug 2022}
+  \resumeItemListStart
+    \resumeItem{Collected and analyzed 30,000 keyword-specific tweets through the Twitter API using Python}
+    \resumeItem{Performed sentiment analysis with Python’s TextBlob library for Natural Language Processing; used Botometer for distinguishing bot activity}
+    \resumeItem{Built Tableau visualizations to communicate trends in sentiment and bot-driven activity by location and popularity}\resumeItemListEnd
+
+    \resumeProjectHeading
+      {\textbf{Computer Vision Research at UTD \textbar{} Linux, Git, Machine Learning, yt-dlp}}{May 2022 -- July 2022}
+    \resumeItemListStart
+        \resumeItem{Curated a dataset to fine-tune an ML model, SMPLify-X, which converts speech input into 3D body gestures}
+        \resumeItem{Tested changes in dataset diversity and hyperparameters to evaluate the model's use in animating digital avatars}
+        \resumeItem{Presented a poster at the SPUR research symposium, winning the CS Honors Presentation Award and \$100}
+    \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS & CERTIFICATIONS-----------
+\section{TECHNICAL SKILLS}
+\resumeSubHeadingListStart
+
+  \resumeItem{C++, Python, Java, C\# .NET, JavaScript, Unix/Linux, Jenkins, REST APIs, AWS, Atlassian, Kubernetes, GitLab, Tableau}
+
+\resumeSubHeadingListEnd
+
+\end{document}

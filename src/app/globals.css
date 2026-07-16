@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode (toggled via the command palette) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ----------------------------------------------------------------------------
+   Design tokens (OKLCH for perceptually even color). Light is the base;
+   .dark overrides. The site defaults to dark — see the theme script in layout.
+---------------------------------------------------------------------------- */
+:root {
+  --background: oklch(0.985 0.003 260);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.20 0.02 260);
+  --muted: oklch(0.46 0.02 260);
+  --border: oklch(0.90 0.006 260);
+  --accent: oklch(0.68 0.16 132);
+  --accent-foreground: oklch(0.16 0.03 130);
+}
+
+.dark {
+  --background: oklch(0.165 0.012 260);
+  --surface: oklch(0.205 0.014 260);
+  --foreground: oklch(0.96 0.006 260);
+  --muted: oklch(0.70 0.014 260);
+  --border: oklch(0.30 0.014 260);
+  --accent: oklch(0.86 0.19 124);
+  --accent-foreground: oklch(0.18 0.03 124);
+}
+
+/* ----------------------------------------------------------------------------
+   Candidate color schemes — previewed via the dev-only switcher
+   (src/components/palette-preview.tsx), which sets data-palette on <html>.
+   Same structure as the default tokens: light base, .dark overrides.
+   Once one wins, fold it into :root/.dark above and delete the rest.
+---------------------------------------------------------------------------- */
+
+/* ice — electric cyan on a colder blue-black */
+html[data-palette="ice"] {
+  --background: oklch(0.985 0.004 240);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.20 0.02 240);
+  --muted: oklch(0.46 0.02 240);
+  --border: oklch(0.90 0.007 240);
+  --accent: oklch(0.58 0.12 230);
+  --accent-foreground: oklch(0.98 0.01 230);
+}
+html[data-palette="ice"].dark {
+  --background: oklch(0.16 0.018 245);
+  --surface: oklch(0.20 0.02 245);
+  --foreground: oklch(0.96 0.008 240);
+  --muted: oklch(0.70 0.016 240);
+  --border: oklch(0.30 0.018 245);
+  --accent: oklch(0.85 0.13 210);
+  --accent-foreground: oklch(0.17 0.04 215);
+}
+
+/* ember — amber on warm charcoal */
+html[data-palette="ember"] {
+  --background: oklch(0.985 0.004 80);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.21 0.015 60);
+  --muted: oklch(0.47 0.02 60);
+  --border: oklch(0.90 0.008 80);
+  --accent: oklch(0.60 0.14 55);
+  --accent-foreground: oklch(0.99 0.01 80);
+}
+html[data-palette="ember"].dark {
+  --background: oklch(0.165 0.008 55);
+  --surface: oklch(0.205 0.010 55);
+  --foreground: oklch(0.96 0.006 80);
+  --muted: oklch(0.70 0.015 70);
+  --border: oklch(0.30 0.012 60);
+  --accent: oklch(0.82 0.16 75);
+  --accent-foreground: oklch(0.20 0.05 70);
+}
+
+/* rose — neon rose on neutral graphite */
+html[data-palette="rose"] {
+  --background: oklch(0.985 0.003 340);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.20 0.015 320);
+  --muted: oklch(0.46 0.015 320);
+  --border: oklch(0.90 0.006 340);
+  --accent: oklch(0.60 0.19 5);
+  --accent-foreground: oklch(0.98 0.01 350);
+}
+html[data-palette="rose"].dark {
+  --background: oklch(0.165 0.010 320);
+  --surface: oklch(0.205 0.012 320);
+  --foreground: oklch(0.96 0.005 340);
+  --muted: oklch(0.70 0.012 330);
+  --border: oklch(0.30 0.012 325);
+  --accent: oklch(0.75 0.17 350);
+  --accent-foreground: oklch(0.22 0.06 350);
+}
+
+/* violet — ultraviolet on ink */
+html[data-palette="violet"] {
+  --background: oklch(0.985 0.004 290);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.20 0.02 290);
+  --muted: oklch(0.46 0.02 290);
+  --border: oklch(0.90 0.008 290);
+  --accent: oklch(0.55 0.19 295);
+  --accent-foreground: oklch(0.98 0.01 295);
+}
+html[data-palette="violet"].dark {
+  --background: oklch(0.16 0.016 290);
+  --surface: oklch(0.20 0.02 290);
+  --foreground: oklch(0.96 0.008 290);
+  --muted: oklch(0.71 0.018 290);
+  --border: oklch(0.30 0.02 290);
+  --accent: oklch(0.78 0.15 300);
+  --accent-foreground: oklch(0.18 0.05 300);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --font-sans: var(--font-geist);
+  --font-display: var(--font-grotesk);
+  --font-mono: var(--font-jbmono);
+}
+
+/* Use our border token as the default border color */
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Subtle dotted grid backdrop. Deliberately a plain background-image with NO
+   mask — a CSS mask on this element would also fade the text on top of it. */
+.bg-grid {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Reduced-motion users get no smooth scroll / transitions */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
