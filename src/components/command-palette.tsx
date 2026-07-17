@@ -152,7 +152,7 @@ export function CommandPalette() {
       { id: "demo-sentiment", group: "Demos", label: "Run the sentiment classifier", hint: "▸ live", keywords: "demo project nlp naive bayes tweets ml", perform: () => openDemo("sentiment") },
       { id: "copy", group: "Actions", label: "Copy email address", hint: site.email, perform: copyEmail },
       { id: "resume", group: "Actions", label: "Open résumé", keywords: "cv download", perform: () => window.open(site.resumeUrl, "_blank", "noopener") },
-      { id: "theme", group: "Theme", label: "Toggle light / dark", keywords: "mode color theme", perform: toggleTheme },
+      { id: "theme", group: "Theme", label: "Toggle light / dark", keywords: "mode night day theme", perform: toggleTheme },
       {
         id: "schemes",
         group: "Theme",
