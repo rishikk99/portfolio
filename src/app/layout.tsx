@@ -4,7 +4,6 @@ import "./globals.css";
 import { CommandPalette } from "@/components/command-palette";
 import { ConsoleGreeting } from "@/components/console-greeting";
 import { PerfHud } from "@/components/perf-hud";
-import { PalettePreview } from "@/components/palette-preview";
 import { site } from "@/lib/site";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" });
@@ -29,8 +28,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Apply the saved theme before first paint to avoid a flash. Defaults to dark.
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');document.documentElement.classList.toggle('dark', t ? t==='dark' : true);}catch(e){document.documentElement.classList.add('dark');}})();`;
+// Apply the saved theme + color scheme before first paint to avoid a flash.
+// Defaults: dark, ember (no data-palette attribute).
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');document.documentElement.classList.toggle('dark', t ? t==='dark' : true);var p=localStorage.getItem('palette');if(p)document.documentElement.dataset.palette=p;}catch(e){document.documentElement.classList.add('dark');}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -47,7 +47,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <CommandPalette />
         <ConsoleGreeting />
         <PerfHud />
-        {process.env.NODE_ENV === "development" && <PalettePreview />}
       </body>
     </html>
   );

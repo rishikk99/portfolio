@@ -8,6 +8,34 @@
    .dark overrides. The site defaults to dark — see the theme script in layout.
 ---------------------------------------------------------------------------- */
 :root {
+  --background: oklch(0.985 0.004 80);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.21 0.015 60);
+  --muted: oklch(0.47 0.02 60);
+  --border: oklch(0.90 0.008 80);
+  --accent: oklch(0.60 0.14 55);
+  --accent-foreground: oklch(0.99 0.01 80);
+}
+
+.dark {
+  --background: oklch(0.165 0.008 55);
+  --surface: oklch(0.205 0.010 55);
+  --foreground: oklch(0.96 0.006 80);
+  --muted: oklch(0.70 0.015 70);
+  --border: oklch(0.30 0.012 60);
+  --accent: oklch(0.82 0.16 75);
+  --accent-foreground: oklch(0.20 0.05 70);
+}
+
+/* ----------------------------------------------------------------------------
+   Alternate color schemes, switchable from the ⌘K palette ("Color scheme: …"),
+   which sets data-palette on <html>. The choice persists in localStorage and
+   is applied before first paint by the theme script in layout.tsx.
+   Default (no data-palette) is ember, defined in :root/.dark above.
+---------------------------------------------------------------------------- */
+
+/* lime — electric lime on cool slate */
+html[data-palette="lime"] {
   --background: oklch(0.985 0.003 260);
   --surface: oklch(1 0 0);
   --foreground: oklch(0.20 0.02 260);
@@ -16,8 +44,7 @@
   --accent: oklch(0.68 0.16 132);
   --accent-foreground: oklch(0.16 0.03 130);
 }
-
-.dark {
+html[data-palette="lime"].dark {
   --background: oklch(0.165 0.012 260);
   --surface: oklch(0.205 0.014 260);
   --foreground: oklch(0.96 0.006 260);
@@ -26,13 +53,6 @@
   --accent: oklch(0.86 0.19 124);
   --accent-foreground: oklch(0.18 0.03 124);
 }
-
-/* ----------------------------------------------------------------------------
-   Candidate color schemes — previewed via the dev-only switcher
-   (src/components/palette-preview.tsx), which sets data-palette on <html>.
-   Same structure as the default tokens: light base, .dark overrides.
-   Once one wins, fold it into :root/.dark above and delete the rest.
----------------------------------------------------------------------------- */
 
 /* ice — electric cyan on a colder blue-black */
 html[data-palette="ice"] {
@@ -52,26 +72,6 @@ html[data-palette="ice"].dark {
   --border: oklch(0.30 0.018 245);
   --accent: oklch(0.85 0.13 210);
   --accent-foreground: oklch(0.17 0.04 215);
-}
-
-/* ember — amber on warm charcoal */
-html[data-palette="ember"] {
-  --background: oklch(0.985 0.004 80);
-  --surface: oklch(1 0 0);
-  --foreground: oklch(0.21 0.015 60);
-  --muted: oklch(0.47 0.02 60);
-  --border: oklch(0.90 0.008 80);
-  --accent: oklch(0.60 0.14 55);
-  --accent-foreground: oklch(0.99 0.01 80);
-}
-html[data-palette="ember"].dark {
-  --background: oklch(0.165 0.008 55);
-  --surface: oklch(0.205 0.010 55);
-  --foreground: oklch(0.96 0.006 80);
-  --muted: oklch(0.70 0.015 70);
-  --border: oklch(0.30 0.012 60);
-  --accent: oklch(0.82 0.16 75);
-  --accent-foreground: oklch(0.20 0.05 70);
 }
 
 /* rose — neon rose on neutral graphite */

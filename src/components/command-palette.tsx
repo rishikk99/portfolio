@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { site } from "@/lib/site";
 import { ShortcutK } from "@/components/shortcut-key";
@@ -8,11 +8,34 @@ import { ShortcutK } from "@/components/shortcut-key";
 type Command = {
   id: string;
   label: string;
-  group: "Navigate" | "Demos" | "Actions" | "Links" | "Fun";
+  group: "Navigate" | "Demos" | "Actions" | "Theme" | "Links" | "Fun";
   hint?: string;
   keywords?: string;
   perform: () => void;
 };
+
+// Color schemes: "" is the default (ember, no data-palette attribute); the
+// rest map to html[data-palette] token overrides in globals.css. The choice
+// lives in localStorage and is applied pre-paint by the script in layout.tsx.
+const SCHEMES = [
+  { id: "", name: "ember", keywords: "amber orange warm default" },
+  { id: "lime", name: "lime", keywords: "green" },
+  { id: "ice", name: "ice", keywords: "cyan blue cold" },
+  { id: "rose", name: "rose", keywords: "pink magenta neon" },
+  { id: "violet", name: "violet", keywords: "purple ultraviolet" },
+] as const;
+
+function readScheme() {
+  try {
+    return localStorage.getItem("palette") ?? "";
+  } catch {
+    return "";
+  }
+}
+function subscribeScheme(cb: () => void) {
+  window.addEventListener("palette:change", cb);
+  return () => window.removeEventListener("palette:change", cb);
+}
 
 /**
  * The signature feature: an IDE-style ⌘K / Ctrl+K command palette.
@@ -55,6 +78,22 @@ export function CommandPalette() {
     flash(dark ? "Switched to dark" : "Switched to light");
   }, [flash]);
 
+  const scheme = useSyncExternalStore(subscribeScheme, readScheme, () => "");
+
+  const setScheme = useCallback(
+    (id: string, name: string) => {
+      if (id) document.documentElement.dataset.palette = id;
+      else delete document.documentElement.dataset.palette;
+      try {
+        if (id) localStorage.setItem("palette", id);
+        else localStorage.removeItem("palette");
+      } catch {}
+      window.dispatchEvent(new Event("palette:change"));
+      flash("Color scheme: " + name);
+    },
+    [flash],
+  );
+
   const copyEmail = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(site.email);
@@ -89,7 +128,17 @@ export function CommandPalette() {
       { id: "demo-sentiment", group: "Demos", label: "Run the sentiment classifier", hint: "▸ live", keywords: "demo project nlp naive bayes tweets ml", perform: () => openDemo("sentiment") },
       { id: "copy", group: "Actions", label: "Copy email address", hint: site.email, perform: copyEmail },
       { id: "resume", group: "Actions", label: "Open résumé", keywords: "cv download", perform: () => window.open(site.resumeUrl, "_blank", "noopener") },
-      { id: "theme", group: "Actions", label: "Toggle light / dark", keywords: "mode color theme", perform: toggleTheme },
+      { id: "theme", group: "Theme", label: "Toggle light / dark", keywords: "mode color theme", perform: toggleTheme },
+      ...SCHEMES.map(
+        (s): Command => ({
+          id: "scheme-" + s.name,
+          group: "Theme",
+          label: "Color scheme: " + s.name,
+          hint: scheme === s.id ? "● active" : undefined,
+          keywords: "color scheme palette accent " + s.keywords,
+          perform: () => setScheme(s.id, s.name),
+        }),
+      ),
       ...(site.socials.github
         ? [{ id: "github", group: "Links", label: "GitHub", hint: "↗", perform: () => window.open(site.socials.github, "_blank", "noopener") } as Command]
         : []),
@@ -98,7 +147,7 @@ export function CommandPalette() {
       { id: "play", group: "Fun", label: "Play the hidden game", hint: "▸", keywords: "easter egg dino runner secret", perform: () => router.push("/play") },
       { id: "perf", group: "Fun", label: "Toggle live perf HUD", hint: "vitals", keywords: "performance web vitals lcp cls inp metrics easter egg", perform: () => window.dispatchEvent(new CustomEvent("perfhud:toggle")) },
     ],
-    [goto, copyEmail, toggleTheme, router, openDemo],
+    [goto, copyEmail, toggleTheme, router, openDemo, scheme, setScheme],
   );
 
   const filtered = useMemo(() => {

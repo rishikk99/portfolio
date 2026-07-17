@@ -31,9 +31,15 @@ Semantic tokens that auto-switch with the `.dark` class — components only ever
 | accent             | the one electric color — use sparingly |
 | accent-foreground  | text/!icons sitting on the accent     |
 
-**Accent = lime.** It's the only saturated color on the page. Used for: section numbers,
-the cursor `›` in the palette, active palette row, hover states, the game player. If
-everything is accent, nothing is — keep it rare.
+**Accent = amber ("ember", the default).** It's the only saturated color on the page.
+Used for: section numbers, the cursor `›` in the palette, active palette row, hover
+states, the game player. If everything is accent, nothing is — keep it rare.
+
+Four alternate schemes — lime, ice, rose, violet — live as `html[data-palette]` token
+overrides in `globals.css`, switchable from ⌘K → "Color scheme: …". The choice persists
+in localStorage (`palette`) and is applied before first paint by the theme script in
+`layout.tsx`. The console greeting and runner game read `--accent` at runtime; the
+generated favicon/OG images hardcode the ember hex values (`#110d0b` bg, `#ffb330` accent).
 
 ## Layout rules (what keeps it un-generic)
 - Left-aligned and asymmetric. **No** centered hero + symmetric 3-icon card grid.

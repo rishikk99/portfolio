@@ -57,7 +57,9 @@ export function RunnerGame() {
     const isDark = document.documentElement.classList.contains("dark");
     const colFg = isDark ? "#e6e6e6" : "#1a1a1a";
     const colGround = isDark ? "#444" : "#cbcbcb";
-    const colAccent = "#a3e635";
+    // Follow the active color scheme; fall back to the ember accent.
+    const colAccent =
+      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#ffb330";
 
     const groundY = () => H - 26;
 

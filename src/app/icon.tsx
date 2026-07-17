@@ -17,14 +17,14 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#14161d",
+          backgroundColor: "#110d0b",
           borderRadius: 7,
-          color: "#f2f3f5",
+          color: "#f4f1ed",
           fontSize: 21,
           fontWeight: 700,
         }}
       >
-        r<span style={{ color: "#a3e635" }}>.</span>
+        r<span style={{ color: "#ffb330" }}>.</span>
       </div>
     ),
     size,

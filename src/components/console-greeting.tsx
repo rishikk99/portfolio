@@ -10,11 +10,14 @@ import { site } from "@/lib/site";
  */
 export function ConsoleGreeting() {
   useEffect(() => {
-    const accent = "color:#a3e635;font-weight:bold";
+    // Follow the active color scheme; fall back to the ember accent.
+    const accentColor =
+      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#ffb330";
+    const accent = "color:" + accentColor + ";font-weight:bold";
     const dim = "color:#9ca3af";
     const k = /mac|iphone|ipad|ipod/i.test(navigator.platform || navigator.userAgent) ? "⌘K" : "Ctrl+K";
 
-    console.log("%c👋 hey there, fellow dev.", "font-size:14px;font-weight:bold;color:#a3e635");
+    console.log("%c👋 hey there, fellow dev.", "font-size:14px;font-weight:bold;color:" + accentColor);
     console.log("%cRun %ccontact()%c if you want to reach me.", dim, accent, dim);
     console.log("%cAlso: press %c" + k + "%c and type \"demo\" — two of my projects run live on this page.", dim, accent, dim);
 

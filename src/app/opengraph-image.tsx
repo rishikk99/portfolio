@@ -20,31 +20,31 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: 88,
-          backgroundColor: "#14161d",
-          backgroundImage: "radial-gradient(circle at 1px 1px, #2b2e37 1.5px, transparent 0)",
+          backgroundColor: "#110d0b",
+          backgroundImage: "radial-gradient(circle at 1px 1px, #322c28 1.5px, transparent 0)",
           backgroundSize: "34px 34px",
         }}
       >
-        <div style={{ display: "flex", color: "#a3e635", fontSize: 30 }}>
+        <div style={{ display: "flex", color: "#ffb330", fontSize: 30 }}>
           {"// " + site.location.toLowerCase()}
         </div>
         <div
           style={{
             display: "flex",
             marginTop: 22,
-            color: "#f2f3f5",
+            color: "#f4f1ed",
             fontSize: 82,
             fontWeight: 700,
             letterSpacing: -2,
           }}
         >
           {site.name}
-          <span style={{ color: "#a3e635" }}>.</span>
+          <span style={{ color: "#ffb330" }}>.</span>
         </div>
-        <div style={{ display: "flex", marginTop: 14, color: "#9aa0ab", fontSize: 42 }}>
+        <div style={{ display: "flex", marginTop: 14, color: "#a59d95", fontSize: 42 }}>
           {site.role}
         </div>
-        <div style={{ display: "flex", marginTop: 56, color: "#9aa0ab", fontSize: 27 }}>
+        <div style={{ display: "flex", marginTop: 56, color: "#a59d95", fontSize: 27 }}>
           {site.tagline}
         </div>
       </div>
