@@ -11,20 +11,28 @@ type Command = {
   group: "Navigate" | "Demos" | "Actions" | "Theme" | "Links" | "Fun";
   hint?: string;
   keywords?: string;
+  keepOpen?: boolean; // don't close the palette after running (e.g. opens a sub-view)
   perform: () => void;
 };
 
 // Color schemes: "" is the default (ember, no data-palette attribute); the
 // rest map to html[data-palette] token overrides in globals.css. The choice
 // lives in localStorage and is applied pre-paint by the script in layout.tsx.
+// Picked from a sub-view of the palette that live-previews on highlight.
 const SCHEMES = [
-  { id: "", name: "ember", keywords: "amber orange warm default" },
-  { id: "lime", name: "lime", keywords: "green" },
-  { id: "ice", name: "ice", keywords: "cyan blue cold" },
-  { id: "rose", name: "rose", keywords: "pink magenta neon" },
-  { id: "violet", name: "violet", keywords: "purple ultraviolet" },
+  { id: "", name: "ember", keywords: "amber orange warm default", swatch: "oklch(0.82 0.16 75)" },
+  { id: "lime", name: "lime", keywords: "green", swatch: "oklch(0.86 0.19 124)" },
+  { id: "ice", name: "ice", keywords: "cyan blue cold", swatch: "oklch(0.85 0.13 210)" },
+  { id: "rose", name: "rose", keywords: "pink magenta neon", swatch: "oklch(0.75 0.17 350)" },
+  { id: "violet", name: "violet", keywords: "purple ultraviolet", swatch: "oklch(0.78 0.15 300)" },
 ] as const;
 
+type Scheme = (typeof SCHEMES)[number];
+
+function applyPalette(id: string) {
+  if (id) document.documentElement.dataset.palette = id;
+  else delete document.documentElement.dataset.palette;
+}
 function readScheme() {
   try {
     return localStorage.getItem("palette") ?? "";
@@ -45,6 +53,7 @@ function subscribeScheme(cb: () => void) {
  */
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState<"commands" | "schemes">("commands");
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
@@ -80,16 +89,31 @@ export function CommandPalette() {
 
   const scheme = useSyncExternalStore(subscribeScheme, readScheme, () => "");
 
-  const setScheme = useCallback(
-    (id: string, name: string) => {
-      if (id) document.documentElement.dataset.palette = id;
-      else delete document.documentElement.dataset.palette;
+  // Enter the scheme picker with the current scheme highlighted (so the
+  // live preview starts as a no-op), or leave it back to the command list.
+  const showSchemes = useCallback(() => {
+    setQuery("");
+    setActive(Math.max(0, SCHEMES.findIndex((s) => s.id === readScheme())));
+    setView("schemes");
+  }, []);
+
+  const backToCommands = useCallback(() => {
+    setQuery("");
+    setActive(0);
+    setView("commands");
+  }, []);
+
+  const pickScheme = useCallback(
+    (s?: Scheme) => {
+      if (!s) return;
+      applyPalette(s.id);
       try {
-        if (id) localStorage.setItem("palette", id);
+        if (s.id) localStorage.setItem("palette", s.id);
         else localStorage.removeItem("palette");
       } catch {}
       window.dispatchEvent(new Event("palette:change"));
-      flash("Color scheme: " + name);
+      setOpen(false);
+      flash("Color scheme: " + s.name);
     },
     [flash],
   );
@@ -129,16 +153,15 @@ export function CommandPalette() {
       { id: "copy", group: "Actions", label: "Copy email address", hint: site.email, perform: copyEmail },
       { id: "resume", group: "Actions", label: "Open résumé", keywords: "cv download", perform: () => window.open(site.resumeUrl, "_blank", "noopener") },
       { id: "theme", group: "Theme", label: "Toggle light / dark", keywords: "mode color theme", perform: toggleTheme },
-      ...SCHEMES.map(
-        (s): Command => ({
-          id: "scheme-" + s.name,
-          group: "Theme",
-          label: "Color scheme: " + s.name,
-          hint: scheme === s.id ? "● active" : undefined,
-          keywords: "color scheme palette accent " + s.keywords,
-          perform: () => setScheme(s.id, s.name),
-        }),
-      ),
+      {
+        id: "schemes",
+        group: "Theme",
+        label: "Change color scheme…",
+        hint: SCHEMES.find((s) => s.id === scheme)?.name ?? "ember",
+        keywords: "color scheme palette accent ember lime ice rose violet",
+        keepOpen: true,
+        perform: showSchemes,
+      },
       ...(site.socials.github
         ? [{ id: "github", group: "Links", label: "GitHub", hint: "↗", perform: () => window.open(site.socials.github, "_blank", "noopener") } as Command]
         : []),
@@ -147,7 +170,7 @@ export function CommandPalette() {
       { id: "play", group: "Fun", label: "Play the hidden game", hint: "▸", keywords: "easter egg dino runner secret", perform: () => router.push("/play") },
       { id: "perf", group: "Fun", label: "Toggle live perf HUD", hint: "vitals", keywords: "performance web vitals lcp cls inp metrics easter egg", perform: () => window.dispatchEvent(new CustomEvent("perfhud:toggle")) },
     ],
-    [goto, copyEmail, toggleTheme, router, openDemo, scheme, setScheme],
+    [goto, copyEmail, toggleTheme, router, openDemo, scheme, showSchemes],
   );
 
   const filtered = useMemo(() => {
@@ -156,10 +179,31 @@ export function CommandPalette() {
     return commands.filter((c) => (c.label + " " + c.group + " " + (c.keywords ?? "")).toLowerCase().includes(q));
   }, [query, commands]);
 
-  // Opening always starts from a clean query/selection
+  const filteredSchemes = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [...SCHEMES];
+    return SCHEMES.filter((s) => (s.name + " " + s.keywords).toLowerCase().includes(q));
+  }, [query]);
+
+  // While the picker is open, highlighting a scheme previews it live;
+  // leaving the picker (back, close, or ⌘K) restores the saved scheme —
+  // which pickScheme has already updated if the user committed a choice.
+  useEffect(() => {
+    if (!open || view !== "schemes") return;
+    return () => applyPalette(readScheme());
+  }, [open, view]);
+
+  useEffect(() => {
+    if (!open || view !== "schemes") return;
+    const s = filteredSchemes[active];
+    if (s) applyPalette(s.id);
+  }, [open, view, active, filteredSchemes]);
+
+  // Opening always starts from a clean query/selection on the command list
   const openPalette = useCallback(() => {
     setQuery("");
     setActive(0);
+    setView("commands");
     setOpen(true);
   }, []);
 
@@ -200,23 +244,28 @@ export function CommandPalette() {
 
   const run = useCallback((cmd?: Command) => {
     if (!cmd) return;
-    setOpen(false);
+    if (!cmd.keepOpen) setOpen(false);
     cmd.perform();
   }, []);
 
   const onInputKey = (e: React.KeyboardEvent) => {
+    const count = view === "schemes" ? filteredSchemes.length : filtered.length;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActive((a) => Math.min(a + 1, filtered.length - 1));
+      setActive((a) => Math.min(a + 1, count - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActive((a) => Math.max(a - 1, 0));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      run(filtered[active]);
+      if (view === "schemes") pickScheme(filteredSchemes[active]);
+      else run(filtered[active]);
     } else if (e.key === "Escape") {
       e.preventDefault();
-      setOpen(false);
+      if (view === "schemes") backToCommands();
+      else setOpen(false);
+    } else if (e.key === "Backspace" && view === "schemes" && query === "") {
+      backToCommands();
     }
   };
 
@@ -243,7 +292,7 @@ export function CommandPalette() {
                   setActive(0);
                 }}
                 onKeyDown={onInputKey}
-                placeholder="Type a command or search…"
+                placeholder={view === "schemes" ? "Pick a color scheme…" : "Type a command or search…"}
                 className="w-full bg-transparent py-4 font-mono text-sm text-foreground outline-none placeholder:text-muted"
                 aria-label="Command input"
               />
@@ -251,7 +300,40 @@ export function CommandPalette() {
             </div>
 
             <div ref={listRef} className="max-h-[50vh] overflow-y-auto p-2">
-              {filtered.length === 0 ? (
+              {view === "schemes" ? (
+                filteredSchemes.length === 0 ? (
+                  <p className="px-3 py-6 text-center font-mono text-sm text-muted">No matches. Try “ember”.</p>
+                ) : (
+                  filteredSchemes.map((s, i) => (
+                    <button
+                      key={s.name}
+                      data-idx={i}
+                      onClick={() => pickScheme(s)}
+                      onMouseEnter={() => setActive(i)}
+                      className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                        i === active ? "bg-accent text-accent-foreground" : "text-foreground"
+                      }`}
+                    >
+                      <span className="flex items-center gap-3">
+                        <span
+                          aria-hidden
+                          className="h-2.5 w-2.5 rounded-full ring-1 ring-black/10"
+                          style={{ background: s.swatch }}
+                        />
+                        {s.name}
+                        {s.id === "" && (
+                          <span className={`font-mono text-[10px] uppercase tracking-wider ${i === active ? "text-accent-foreground/70" : "text-muted"}`}>
+                            default
+                          </span>
+                        )}
+                      </span>
+                      {scheme === s.id && (
+                        <span className={`font-mono text-xs ${i === active ? "text-accent-foreground/80" : "text-muted"}`}>● active</span>
+                      )}
+                    </button>
+                  ))
+                )
+              ) : filtered.length === 0 ? (
                 <p className="px-3 py-6 text-center font-mono text-sm text-muted">No matches. Try “projects”.</p>
               ) : (
                 filtered.map((cmd, i) => (
@@ -279,7 +361,7 @@ export function CommandPalette() {
             </div>
 
             <div className="flex items-center justify-between border-t px-4 py-2 font-mono text-[10px] text-muted">
-              <span>↑↓ navigate · ↵ select</span>
+              <span>{view === "schemes" ? "↑↓ preview · ↵ apply · esc back" : "↑↓ navigate · ↵ select"}</span>
               <span><ShortcutK /></span>
             </div>
           </div>
