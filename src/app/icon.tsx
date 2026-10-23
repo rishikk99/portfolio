@@ -1,31 +1,16 @@
 import { ImageResponse } from "next/og";
+import { rkDataUri } from "@/lib/rk-svg";
 
-/**
- * Browser-tab favicon, generated at build time: the header wordmark's
- * "r." monogram on the site's dark background.
- */
+/** Browser-tab favicon, generated at build time: the "rk." mark (src/components/logo-mark.tsx). */
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
+export const dynamic = "force-static";
 
 export default function Icon() {
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#110d0b",
-          borderRadius: 7,
-          color: "#f4f1ed",
-          fontSize: 21,
-          fontWeight: 700,
-        }}
-      >
-        r<span style={{ color: "#ffb330" }}>.</span>
-      </div>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={rkDataUri()} width={32} height={32} alt="" />
     ),
     size,
   );

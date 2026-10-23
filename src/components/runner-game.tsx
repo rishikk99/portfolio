@@ -54,12 +54,11 @@ export function RunnerGame() {
     resize();
     window.addEventListener("resize", resize);
 
-    const isDark = document.documentElement.classList.contains("dark");
-    const colFg = isDark ? "#e6e6e6" : "#1a1a1a";
-    const colGround = isDark ? "#444" : "#cbcbcb";
-    // Follow the active color scheme; fall back to the ember accent.
-    const colAccent =
-      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#ffb330";
+    // Draw in the page's own colors, so the game follows light and dark mode.
+    const tokens = getComputedStyle(document.documentElement);
+    const colFg = tokens.getPropertyValue("--foreground").trim() || "#1c1b19";
+    const colGround = tokens.getPropertyValue("--border").trim() || "#e2ded3";
+    const colAccent = tokens.getPropertyValue("--accent").trim() || "#c2410c";
 
     const groundY = () => H - 26;
 

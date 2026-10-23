@@ -43,3 +43,7 @@ next-env.d.ts
 # local agent config (not part of the site)
 CLAUDE.md
 AGENTS.md
+
+# cloudflare
+.wrangler/
+.dev.vars

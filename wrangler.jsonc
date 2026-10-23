@@ -1,0 +1,32 @@
+// The site on Cloudflare: static files from `next build` (out/) plus a small
+// Worker (worker/index.ts) for the contact form. Deploy with `npm run deploy`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rishikk-site",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // The Worker sees every request: it redirects www, types the generated
+    // images, handles the form, and passes everything else to the static files.
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "rishikk.com", "custom_domain": true },
+    { "pattern": "www.rishikk.com", "custom_domain": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "rishikk-site",
+      "database_id": "da129131-cd27-4c68-ad60-82d1e440ee4e",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Cloudflare Email Routing: can only send to this verified address.
+  "send_email": [{ "name": "MAILER", "destination_address": "rishik.kanchanapally@gmail.com" }],
+  "observability": { "enabled": false }
+  // Secret, never committed: TURNSTILE_SECRET (wrangler secret put TURNSTILE_SECRET).
+}

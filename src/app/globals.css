@@ -1,117 +1,73 @@
 @import "tailwindcss";
 
-/* Enable class-based dark mode (toggled via the command palette) */
-@custom-variant dark (&:where(.dark, .dark *));
+/* dark: utilities follow the resolved theme (see the theme script in layout.tsx). */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 /* ----------------------------------------------------------------------------
-   Design tokens (OKLCH for perceptually even color). Light is the base;
-   .dark overrides. The site defaults to dark — see the theme script in layout.
+   Design tokens: warm paper and near-black ink, with one rust accent kept for
+   small live/interactive signals. Dark mode follows the system setting unless
+   the visitor picked one (html[data-theme]). See ART_DIRECTION.md.
 ---------------------------------------------------------------------------- */
 :root {
-  --background: oklch(0.985 0.004 80);
-  --surface: oklch(1 0 0);
-  --foreground: oklch(0.21 0.015 60);
-  --muted: oklch(0.47 0.02 60);
-  --border: oklch(0.90 0.008 80);
-  --accent: oklch(0.60 0.14 55);
-  --accent-foreground: oklch(0.99 0.01 80);
+  --background: #f7f6f2;
+  --surface: #ffffff;
+  --foreground: #1c1b19;
+  --muted: #6f6a60;
+  --border: #e2ded3;
+  --accent: #c2410c;
+  --accent-foreground: #ffffff;
+  --link-underline: #cfcabd;
+  --heading: var(--muted); /* section labels */
+  color-scheme: light;
 }
 
-.dark {
-  --background: oklch(0.165 0.008 55);
-  --surface: oklch(0.205 0.010 55);
-  --foreground: oklch(0.96 0.006 80);
-  --muted: oklch(0.70 0.015 70);
-  --border: oklch(0.30 0.012 60);
-  --accent: oklch(0.82 0.16 75);
-  --accent-foreground: oklch(0.20 0.05 70);
+/* ---------------------------------------------------------------------------
+   Text color palettes under comparison (light mode only for now; the
+   background stays). Preview them at /colors. Once one is picked, it replaces
+   these and they go.
+     --heading  section labels      --title  project and company names
+     --link     links in text       --link-underline
+--------------------------------------------------------------------------- */
+:root[data-palette="rust"][data-theme="light"] {
+  --heading: #c2410c; --title: #c2410c; --link: #9a3412; --link-underline: #e8b49b;
+}
+:root[data-palette="navy"][data-theme="light"] {
+  --heading: #c2410c; --title: #1e3a8a; --link: #1e40af; --link-underline: #a9bde9;
+}
+:root[data-palette="forest"][data-theme="light"] {
+  --heading: #2f6b47; --title: #2f6b47; --link: #2f6b47; --link-underline: #a7c2ad;
+}
+:root[data-palette="teal"][data-theme="light"] {
+  --heading: #0f766e; --title: #0f766e; --link: #c2410c; --link-underline: #f0b8a0;
+}
+:root[data-palette="blue"][data-theme="light"] {
+  --heading: #2f5bd3; --title: #1c1b19; --link: #2f5bd3; --link-underline: #a9bde9;
 }
 
-/* ----------------------------------------------------------------------------
-   Alternate color schemes, switchable from the ⌘K palette ("Color scheme: …"),
-   which sets data-palette on <html>. The choice persists in localStorage and
-   is applied before first paint by the theme script in layout.tsx.
-   Default (no data-palette) is ember, defined in :root/.dark above.
----------------------------------------------------------------------------- */
-
-/* lime — electric lime on cool slate */
-html[data-palette="lime"] {
-  --background: oklch(0.985 0.003 260);
-  --surface: oklch(1 0 0);
-  --foreground: oklch(0.20 0.02 260);
-  --muted: oklch(0.46 0.02 260);
-  --border: oklch(0.90 0.006 260);
-  --accent: oklch(0.68 0.16 132);
-  --accent-foreground: oklch(0.16 0.03 130);
-}
-html[data-palette="lime"].dark {
-  --background: oklch(0.165 0.012 260);
-  --surface: oklch(0.205 0.014 260);
-  --foreground: oklch(0.96 0.006 260);
-  --muted: oklch(0.70 0.014 260);
-  --border: oklch(0.30 0.014 260);
-  --accent: oklch(0.86 0.19 124);
-  --accent-foreground: oklch(0.18 0.03 124);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #161513;
+    --surface: #1f1d1a;
+    --foreground: #ece9e2;
+    --muted: #a19b8f;
+    --border: #2f2c27;
+    --accent: #fb923c;
+    --accent-foreground: #161513;
+    --link-underline: #57524a;
+    color-scheme: dark;
+  }
 }
 
-/* ice — electric cyan on a colder blue-black */
-html[data-palette="ice"] {
-  --background: oklch(0.985 0.004 240);
-  --surface: oklch(1 0 0);
-  --foreground: oklch(0.20 0.02 240);
-  --muted: oklch(0.46 0.02 240);
-  --border: oklch(0.90 0.007 240);
-  --accent: oklch(0.58 0.12 230);
-  --accent-foreground: oklch(0.98 0.01 230);
-}
-html[data-palette="ice"].dark {
-  --background: oklch(0.16 0.018 245);
-  --surface: oklch(0.20 0.02 245);
-  --foreground: oklch(0.96 0.008 240);
-  --muted: oklch(0.70 0.016 240);
-  --border: oklch(0.30 0.018 245);
-  --accent: oklch(0.85 0.13 210);
-  --accent-foreground: oklch(0.17 0.04 215);
-}
-
-/* rose — neon rose on neutral graphite */
-html[data-palette="rose"] {
-  --background: oklch(0.985 0.003 340);
-  --surface: oklch(1 0 0);
-  --foreground: oklch(0.20 0.015 320);
-  --muted: oklch(0.46 0.015 320);
-  --border: oklch(0.90 0.006 340);
-  --accent: oklch(0.60 0.19 5);
-  --accent-foreground: oklch(0.98 0.01 350);
-}
-html[data-palette="rose"].dark {
-  --background: oklch(0.165 0.010 320);
-  --surface: oklch(0.205 0.012 320);
-  --foreground: oklch(0.96 0.005 340);
-  --muted: oklch(0.70 0.012 330);
-  --border: oklch(0.30 0.012 325);
-  --accent: oklch(0.75 0.17 350);
-  --accent-foreground: oklch(0.22 0.06 350);
-}
-
-/* violet — ultraviolet on ink */
-html[data-palette="violet"] {
-  --background: oklch(0.985 0.004 290);
-  --surface: oklch(1 0 0);
-  --foreground: oklch(0.20 0.02 290);
-  --muted: oklch(0.46 0.02 290);
-  --border: oklch(0.90 0.008 290);
-  --accent: oklch(0.55 0.19 295);
-  --accent-foreground: oklch(0.98 0.01 295);
-}
-html[data-palette="violet"].dark {
-  --background: oklch(0.16 0.016 290);
-  --surface: oklch(0.20 0.02 290);
-  --foreground: oklch(0.96 0.008 290);
-  --muted: oklch(0.71 0.018 290);
-  --border: oklch(0.30 0.02 290);
-  --accent: oklch(0.78 0.15 300);
-  --accent-foreground: oklch(0.18 0.05 300);
+:root[data-theme="dark"] {
+  --background: #161513;
+  --surface: #1f1d1a;
+  --foreground: #ece9e2;
+  --muted: #a19b8f;
+  --border: #2f2c27;
+  --accent: #fb923c;
+  --accent-foreground: #161513;
+  --link-underline: #57524a;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -122,9 +78,10 @@ html[data-palette="violet"].dark {
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-heading: var(--heading);
 
   --font-sans: var(--font-geist);
-  --font-display: var(--font-grotesk);
+  --font-display: var(--font-geist);
   --font-mono: var(--font-jbmono);
 }
 
@@ -146,15 +103,24 @@ body {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background: var(--foreground);
+  color: var(--background);
 }
 
-/* Subtle dotted grid backdrop. Deliberately a plain background-image with NO
-   mask — a CSS mask on this element would also fade the text on top of it. */
-.bg-grid {
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* Project and company names. */
+.text-title {
+  color: var(--title, inherit);
+}
+
+/* Links in running text: a quiet underline that darkens on hover. */
+.text-link {
+  color: var(--link, inherit);
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-underline-offset: 3px;
+}
+.text-link:hover {
+  text-decoration-color: var(--foreground);
 }
 
 /* Reduced-motion users get no smooth scroll / transitions */

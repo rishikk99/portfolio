@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { CommandPalette } from "@/components/command-palette";
-import { ConsoleGreeting } from "@/components/console-greeting";
-import { PerfHud } from "@/components/perf-hud";
 import { site } from "@/lib/site";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" });
-const grotesk = Space_Grotesk({ variable: "--font-grotesk", subsets: ["latin"], display: "swap" });
 const jbmono = JetBrains_Mono({ variable: "--font-jbmono", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
@@ -28,25 +24,19 @@ export const metadata: Metadata = {
   },
 };
 
-// Apply the saved theme + color scheme before first paint to avoid a flash.
-// Defaults: dark, ember (no data-palette attribute).
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');document.documentElement.classList.toggle('dark', t ? t==='dark' : true);var p=localStorage.getItem('palette');if(p)document.documentElement.dataset.palette=p;}catch(e){document.documentElement.classList.add('dark');}})();`;
+// Resolve the theme before first paint (saved choice, else the system setting)
+// so there's no flash of the wrong one.
+// ?palette= and ?theme= are for the /colors comparison page only; remove with it.
+const themeScript = `(function(){var d=document.documentElement;try{var q=new URLSearchParams(location.search);if(q.get('palette'))d.dataset.palette=q.get('palette');var t=q.get('theme')||localStorage.getItem('theme');d.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geist.variable} ${grotesk.variable} ${jbmono.variable} h-full`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${geist.variable} ${jbmono.variable} h-full`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-full antialiased">
         {children}
-        <CommandPalette />
-        <ConsoleGreeting />
-        <PerfHud />
       </body>
     </html>
   );
